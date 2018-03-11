@@ -3,13 +3,13 @@
 
 #include <Arduboy2.h>
 
-#define PAD_EDGES_WIDTH 10
-//4
-#define PAD_NORMAL_WIDTH 40
-//20
+#define PAD_EDGES_WIDTH 4
+#define PAD_NORMAL_WIDTH 26
 
 
-enum padType{NORMAL, DOUBLE};
+
+
+enum padType{NORMAL, DOUBLE}; 
 
 
 

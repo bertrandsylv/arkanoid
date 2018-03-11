@@ -59,8 +59,8 @@ void loop() {
 
   // cheat mode: enlarge pad
   if (arduboy.justPressed(B_BUTTON) && (pad._type==NORMAL)){
-    pad._width=40;
-    pad._xTL -= 10;
+    pad._width=2*PAD_NORMAL_WIDTH;
+    pad._xTL -= int(PAD_NORMAL_WIDTH/2);
     if (pad._xTL<0) {pad._xTL = 0;}
     if (pad._xTL + pad._width > WIDTH) {pad._xTL = WIDTH - pad._width; }
     pad._type = DOUBLE;
@@ -68,7 +68,7 @@ void loop() {
   
   if (arduboy.justPressed(A_BUTTON) && (pad._type==DOUBLE)){
     pad._width=PAD_NORMAL_WIDTH;
-    pad._xTL += 10;
+    pad._xTL += int(PAD_NORMAL_WIDTH/2);
     pad._type = NORMAL;
   }
 
@@ -84,8 +84,12 @@ void loop() {
   // check for ball out
   // ------------------------------------------------------------
   if (checkBallOut(ball, pad)){
-    tinyfont.setCursor(110,2);
+    tinyfont.setCursor(10,2);
     tinyfont.print("OUT");
+    ball._vy = 0;
+    delay(1000);
+    ball.reset();
+    pad.reset();
   } else {
     tinyfont.setCursor(115,2);
     tinyfont.print("IN ");
@@ -94,8 +98,6 @@ void loop() {
   // check for collision of ball with pad
   // ------------------------------------------------------------
   collisionType col = checkBallCollisionWithPad(ball, pad);
-  tinyfont.setCursor(115,2);
-  tinyfont.print("IN ");
   tinyfont.setCursor(70,2);
   tinyfont.print("PAD:");
   switch(col){
@@ -105,31 +107,43 @@ void loop() {
     }
     case FROM_LEFT:{
       tinyfont.print("L");
-      ball._vy = -1*ball._vy;
+      ball._vy = -1*abs(ball._vy); // abs to prevent from rebounds inside pad
       ball._vx--;
       break;
     }
     case FROM_RIGHT:{
       tinyfont.print("R");
-      ball._vy = -1*ball._vy;
+      ball._vy = -1*abs(ball._vy);
       ball._vx++;
       break;
     }
     case FROM_TOP:{
       tinyfont.print("T");
-      ball._vy = -1*ball._vy;
+      ball._vy = -1*abs(ball._vy);
       break;
     }
-    /*case NONE:{
-      tinyfont.print("None");
-      break;
-    }
-    default:{
-      tinyfont.print("Def");
-      break;
-    }*/
+
     
   }
+
+
+  // check for collision with brick
+  // ------------------------------------------------------------
+  for (int iRow=0; iRow<WALL_HEIGHT; iRow++ ){
+    for (int jCol=0; jCol<WALL_WIDTH; jCol++){
+
+      // for activated bricks only
+      if (wall._brickType[iRow][jCol]>0){ 
+          
+          if (checkBallCollisionWithBrick(ball, wall, iRow, jCol)){
+            wall._brickType[iRow][jCol]=0;
+            wall._nbOfBricksLeft--;            
+          }
+          
+      }
+    }
+  }
+
 
   // draw borders of screen
   // ------------------------------------------------------------
