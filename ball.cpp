@@ -7,7 +7,7 @@ Ball::Ball() {
   _x = WIDTH/2;
   _y = HEIGHT - 10;
   _vx = 1;
-  _vy = -1;
+  _vy = -2;
   _r = 2;
 }
 
@@ -57,6 +57,6 @@ void Ball::reset(){
   _x = WIDTH/2;
   _y = HEIGHT - 10;
   _vx = 1;
-  _vy = -1;
+  _vy = -2;
   _r = 2;
 }

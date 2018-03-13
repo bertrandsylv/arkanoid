@@ -147,13 +147,13 @@ void Wall::initToLevel(const char* level){
   for (int iRow=0; iRow<WALL_HEIGHT; iRow++ ){
     for (int jCol=0; jCol<WALL_WIDTH; jCol++){
         _brickType[iRow][jCol] = int(level[iLevel] - '0');
-        if (int(level[iLevel]>0)) {
+        if (int(level[iLevel]- '0')>0) {
           _nbOfBricks++;
         }
         iLevel++;
     }  
   }
-  _nbOfBricksLeft = WALL_WIDTH * WALL_HEIGHT;
+  _nbOfBricksLeft = _nbOfBricks;
 }
 
 

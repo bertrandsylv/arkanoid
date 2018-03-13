@@ -42,7 +42,7 @@ const char* level3 =  "77777777777"
                       "77777777777";
 
 
-const char* levels[] = {levelTest, level0, level1, level2, level3};
+const char* levels[] = {level0, levelTest, level1, level2, level3};
 
 
 #endif
