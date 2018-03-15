@@ -9,6 +9,7 @@ Ball::Ball() {
   _vx = 1;
   _vy = -2;
   _r = 2;
+  _type = NORMAL_BALL;
 }
 
 // ---------------------------------------------------
@@ -46,9 +47,18 @@ void Ball::move() {
 void Ball::draw(Arduboy2 arduboy) {
 // ---------------------------------------------------
   arduboy.fillCircle(_x, _y, _r);
-  arduboy.drawPixel(_x-1, _y-1, BLACK);
-  arduboy.drawPixel(_x, _y-1, BLACK);
-  arduboy.drawPixel(_x-1, _y, BLACK);
+  if (_type == NORMAL_BALL){
+    arduboy.drawPixel(_x-1, _y-1, BLACK);
+    arduboy.drawPixel(_x, _y-1, BLACK);
+    arduboy.drawPixel(_x-1, _y, BLACK);
+  } else {
+    arduboy.drawPixel(_x-2, _y-2, BLACK);
+    arduboy.drawPixel(_x-1, _y-2, BLACK);
+    arduboy.drawPixel(_x, _y-2, BLACK);
+    arduboy.drawPixel(_x-2, _y, BLACK);
+    arduboy.drawPixel(_x-2, _y-1, BLACK);
+  }
+  
 }
 
 // ---------------------------------------------------
@@ -59,4 +69,5 @@ void Ball::reset(){
   _vx = 1;
   _vy = -2;
   _r = 2;
+  _type = NORMAL_BALL;
 }

@@ -6,6 +6,7 @@
 #include "pad.h"
 #include "wall.h"
 #include "levels.h"
+#include "bonus.h"
 #include "collisionChecker.h"
 
 // flag to display debug data on screen
@@ -17,6 +18,7 @@ Tinyfont tinyfont = Tinyfont(arduboy.sBuffer, Arduboy2::width(), Arduboy2::heigh
 Ball ball;
 Pad pad;
 Wall wall;
+Bonus bonus;
 int levelNo = 0;
 
 
@@ -79,19 +81,36 @@ void loop() {
     if (pad._xTL<0) {pad._xTL = 0;}
   }
 
-  // cheat mode: enlarge pad
-  if (arduboy.justPressed(B_BUTTON) && (pad._type==NORMAL)){
-    pad._width=2*PAD_NORMAL_WIDTH;
-    pad._xTL -= int(PAD_NORMAL_WIDTH/2);
-    if (pad._xTL<0) {pad._xTL = 0;}
-    if (pad._xTL + pad._width > WIDTH) {pad._xTL = WIDTH - pad._width; }
-    pad._type = DOUBLE;
+/*
+  // cheat mode: enlarge ball
+  if (arduboy.justPressed(B_BUTTON)){
+    if (ball._type==NORMAL_BALL){
+      ball._r = 2*ball._r;
+      ball._type = DOUBLE_BALL;
+    } else {
+      ball._r = int(ball._r/2);
+      ball._type = NORMAL_BALL;
+    }
+  }
+*/
+
+  if (arduboy.justPressed(B_BUTTON)){
+    bonus.initNew(5, 5);
   }
   
-  if (arduboy.justPressed(A_BUTTON) && (pad._type==DOUBLE)){
-    pad._width=PAD_NORMAL_WIDTH;
-    pad._xTL += int(PAD_NORMAL_WIDTH/2);
-    pad._type = NORMAL;
+  // cheat mode: enlarge pad
+  if (arduboy.justPressed(A_BUTTON)){
+    if (pad._type==DOUBLE){
+      pad._width=PAD_NORMAL_WIDTH;
+      pad._xTL += int(PAD_NORMAL_WIDTH/2);
+      pad._type = NORMAL;
+    } else {
+      pad._width=2*PAD_NORMAL_WIDTH;
+      pad._xTL -= int(PAD_NORMAL_WIDTH/2);
+      if (pad._xTL<0) {pad._xTL = 0;}
+      if (pad._xTL + pad._width > WIDTH) {pad._xTL = WIDTH - pad._width; }
+      pad._type = DOUBLE;
+    }
   }
 
   // change level
@@ -124,16 +143,16 @@ void loop() {
 
   // check for collision of ball with pad
   // ------------------------------------------------------------
-  collisionType col = checkBallCollisionWithPad(ball, pad);
+  collisionType colPad = checkBallCollisionWithPad(ball, pad);
   if (DEBUG_DISP){
     tinyfont.setCursor(70,2);
     tinyfont.print("PAD:");
   }
-  switch(col){
-    case ERR:{
+  switch(colPad){
+    /*case ERR:{
       if (DEBUG_DISP){tinyfont.print("ERR");}
       break;
-    }
+    }*/
     case FROM_LEFT:{
       if (DEBUG_DISP){tinyfont.print("L");}
       ball._vy = -1*abs(ball._vy); // abs to prevent from rebounds inside pad
@@ -161,15 +180,19 @@ void loop() {
   if (DEBUG_DISP){
     tinyfont.setCursor(50,2);
     tinyfont.print("BR:");
+    tinyfont.print(wall._nbOfBricksLeft);
   }
-  tinyfont.print(wall._nbOfBricksLeft);
+  
   for (int iRow=0; iRow<WALL_HEIGHT; iRow++ ){
     for (int jCol=0; jCol<WALL_WIDTH; jCol++){
 
       // for activated bricks only
       if (wall._brickType[iRow][jCol]>0){ 
+
+          collisionType colBrick = checkBallCollisionWithBrick(ball, wall, iRow, jCol);
           
-          if (checkBallCollisionWithBrick(ball, wall, iRow, jCol)){
+          //if (checkBallCollisionWithBrick(ball, wall, iRow, jCol)){
+          if (colBrick!=NONE){
             
             // remove brick
             wall._brickType[iRow][jCol]=0;
@@ -186,7 +209,12 @@ void loop() {
               pad.reset();
               ball.reset();
               waitForAnyKeyPressed(arduboy);
-            }       
+            } /*else {
+              // level not finished: rebound of ball
+              if ((colB == FROM_TOP)||(colB == FROM_BOTTOM)){ ball._vy = -1*abs(ball._vy); }
+              if ((colB == FROM_LEFT)||(colB == FROM_RIGHT)){ ball._vx = -1*abs(ball._vx); }
+            }*/
+           
           }
       }
           
@@ -205,6 +233,9 @@ void loop() {
   ball.draw(arduboy);
   pad.draw(arduboy);
   wall.draw(arduboy);
+  if (bonus._falling){
+    bonus.draw(arduboy);
+  }
 
 
   // display

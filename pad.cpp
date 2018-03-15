@@ -3,7 +3,7 @@
 // ---------------------------------------------------
 Pad::Pad(){
 // ---------------------------------------------------
-  _type ==0;
+  _type == NORMAL;
   _width=PAD_NORMAL_WIDTH;
   _height = 4;
   _xTL = int(WIDTH- _width)/2;
@@ -23,7 +23,7 @@ void Pad::draw(Arduboy2 arduboy){
 // ---------------------------------------------------
 void Pad::reset(){
 // ---------------------------------------------------
-  _type ==0;
+  _type == NORMAL;
   _width=PAD_NORMAL_WIDTH;
   _height = 4;
   _xTL = int(WIDTH- _width)/2;

@@ -20,7 +20,7 @@ class Pad {
 		int _yTL; //Top Left coordinate of rectangle
 		int _width;
     int _height;
-		int _type;
+		padType _type;
 
     Pad();
 		void draw(Arduboy2 arduboy);

@@ -3,6 +3,7 @@
 
 #include <Arduboy2.h>
 
+enum ballType{NORMAL_BALL, DOUBLE_BALL};
 
 class Ball {
   public:
@@ -11,6 +12,7 @@ class Ball {
     int16_t _vx;
     int16_t _vy;
     int16_t _r;
+    ballType _type;
 
     Ball();
     void move();
