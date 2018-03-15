@@ -235,6 +235,7 @@ void loop() {
   wall.draw(arduboy);
   if (bonus._falling){
     bonus.draw(arduboy);
+    bonus.move();
   }
 
 
