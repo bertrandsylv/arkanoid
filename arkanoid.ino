@@ -47,6 +47,7 @@ void waitForAnyKeyPressed(Arduboy2 arduboy) {
     if (arduboy.justPressed(RIGHT_BUTTON) || arduboy.justPressed(LEFT_BUTTON) || arduboy.justPressed(UP_BUTTON) || arduboy.justPressed(DOWN_BUTTON) ||  arduboy.justPressed(A_BUTTON) || arduboy.justPressed(B_BUTTON)){
       break;
     }
+    //arduboy.pollButtons();
   }
 
 }
@@ -98,15 +99,27 @@ switch(gameMode){
     arduboy.print("LEVEL ");
     arduboy.print(levelNo+1);
     arduboy.display();
-    //arduboy.pollButtons();
-    //waitForAnyKeyPressed(arduboy);
     delay(3000);
-    arduboy.pollButtons();
     
+    arduboy.clear();
     
     wall.initToLevel(levels[levelNo]);
     pad.reset();
     ball.reset();
+
+    // draw borders
+    arduboy.drawLine(0,0,WIDTH-1,0,1);
+    arduboy.drawLine(0,0,0,HEIGHT-1,1);
+    arduboy.drawLine(WIDTH-1,0,WIDTH-1,HEIGHT-1,1);
+  
+    // draw other objects
+    ball.draw(arduboy);
+    pad.draw(arduboy);
+    wall.draw(arduboy);  
+  
+    // display and wait for key pressed
+    arduboy.display();
+    delay(1000); //waitForAnyKeyPressed(arduboy);
     
     gameMode = PLAY;
     break;
@@ -260,6 +273,13 @@ switch(gameMode){
   
               // level finished 
               if (wall._nbOfBricksLeft==0){
+                arduboy.clear();
+                arduboy.drawLine(0,0,WIDTH-1,0,1);
+                arduboy.drawLine(0,0,0,HEIGHT-1,1);
+                arduboy.drawLine(WIDTH-1,0,WIDTH-1,HEIGHT-1,1);
+                ball.draw(arduboy);
+                pad.draw(arduboy);
+                arduboy.display();
                 delay(2000);
                 //levelNo++;
                 //if (levelNo>=NB_OF_LEVELS) {
